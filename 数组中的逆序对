@@ -1,0 +1,53 @@
+https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
+
+在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。
+
+ 
+
+示例 1:
+
+输入: [7,5,6,4]
+输出: 5
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+
+
+#归并思想
+#逆序列组成  左边序列逆序对数，右边序列逆序对数，两个区间逆序对数
+#核心思想，左右的逆序对数分别当左右只有一个数才能对比，克认为市最小单位区间对比，对比好后做区间对比，以后是指上一直做区间对比到结束
+def count_merge(list_num):
+    if len(list_num)<=1:
+        return list_num,0
+    else:
+        middle=len(list_num)//2
+        sort_left,n_l=count_merge(list_num[:middle])
+        sort_right,n_r=count_merge(list_num[middle:])
+        return lr_merge(sort_left,n_l,sort_right,n_r)
+
+def lr_merge(sort_left,n_l,sort_right,n_r):
+    len_l=len(sort_left)
+    len_r=len(sort_right)
+    l=0
+    r=0
+    num=n_l+n_r
+    sort_result=[]
+    while (l<=len_l-1)&(r<=len_r-1):
+        if sort_left[l]<=sort_right[r]:
+            sort_result.append(sort_left[l])
+            l+=1
+        else:
+            sort_result.append(sort_right[r])
+            num+=len_l-l#注意这里不是加加1，而是当加如右边数字时，看l多大，l=0表示比left所有数小，l=1表示比左边初第一个数外所有数小，一次类推
+            r+=1            
+    if l==len_l:
+        sort_result.extend(sort_right[r:])
+    else:#r=len_r
+        sort_result.extend(sort_left[l:])
+    return sort_result,num
+
+class Solution:
+    def reversePairs(self, nums: List[int]) -> int:
+        return count_merge(nums)[1]
