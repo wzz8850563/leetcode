@@ -1,0 +1,86 @@
+https://leetcode-cn.com/problems/zhong-jian-er-cha-shu-lcof/
+
+输入某二叉树的前序遍历和中序遍历的结果，请重建该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。
+
+ 
+
+例如，给出
+
+前序遍历 preorder = [3,9,20,15,7]
+中序遍历 inorder = [9,3,15,20,7]
+返回如下的二叉树：
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+ 
+
+限制：
+
+0 <= 节点个数 <= 5000
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/zhong-jian-er-cha-shu-lcof
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+def build(preorder,inorder):
+    if len(preorder)==0:
+        return None
+
+    tree=TreeNode(preorder[0])
+    position=inorder.index(preorder[0])
+    left_inorder=inorder[:position]
+    right_inorder=inorder[position+1:]
+    left_preorder=preorder[1:len(left_inorder)+1]
+    right_preorder=preorder[len(left_inorder)+1:]
+    if len(left_inorder)==1:
+        tree.left=TreeNode(left_inorder[0])
+    elif len(left_inorder)==0:
+        tree.left=None
+    else:
+        tree.left=build(left_preorder,left_inorder)
+    if len(right_preorder)==1:
+        tree.right=TreeNode(right_preorder[0])
+    elif len(right_preorder)==0:
+        tree.right=None
+    else:
+        tree.right=build(right_preorder,right_inorder)
+    return tree
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        return build(preorder,inorder)
+
+
+class Solution:
+    # 这里定义函数，两个参数分别是前序和中序遍历的序列，两个数组
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        # 以下两个if是为了判断一下特殊情况
+        # 但是其最重要的作用其实是整个函数的终止条件
+        # 因为递归调用，函数嵌套着函数，在运行第一遍函数的时候是不能直接得到结果的
+        # 递归过程中，子树被不断细化，直到长度为1或者0的时候，通过这两个if得到答案
+        # 然后从嵌套中一个一个解开，使得整个递归过程得到最终解并且终止
+        if len(preorder)==0:
+            return None
+        elif len(preorder)==1:
+            return TreeNode(preorder[0])
+        else:
+            position =inorder.index(preorder[0])
+            tree=TreeNode(preorder[0])
+        left_inorder=inorder[:position]
+        right_inorder=inorder[position+1:]
+        left_preorder=preorder[1:len(left_inorder)+1]
+        right_preorder=preorder[len(left_inorder)+1:]            
+        tree.left=self.buildTree(left_preorder,left_inorder)
+        tree.right=self.buildTree(right_preorder,right_inorder)
+        return tree
