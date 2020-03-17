@@ -1,0 +1,52 @@
+https://leetcode-cn.com/problems/kth-largest-element-in-an-array/
+
+在未排序的数组中找到第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+
+示例 1:
+
+输入: [3,2,1,5,6,4] 和 k = 2
+输出: 5
+示例 2:
+
+输入: [3,2,3,1,2,4,5,5,6] 和 k = 4
+输出: 4
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/kth-largest-element-in-an-array
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+
+
+#归并思想,自建sort
+def sort_merge(list_num):
+    if len(list_num)<=1:
+        return list_num
+    else:
+        middle=len(list_num)//2
+        sort_left=sort_merge(list_num[:middle])
+        sort_right=sort_merge(list_num[middle:])
+        return merge(sort_left,sort_right)
+
+def merge(sort_left,sort_right):
+    len_l=len(sort_left)
+    len_r=len(sort_right)
+    l=0
+    r=0
+    sort_result=[]
+    while (l<=len_l-1)&(r<=len_r-1):
+        if sort_left[l]<=sort_right[r]:
+            sort_result.append(sort_left[l])
+            l+=1
+        else:
+            sort_result.append(sort_right[r])
+            r+=1            
+    if l==len_l:
+        sort_result.extend(sort_right[r:])
+    else:#r=len_r
+        sort_result.extend(sort_left[l:])
+    return sort_result
+
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        nums2=sort_merge(nums)
+        return nums2[-k]
